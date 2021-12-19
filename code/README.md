@@ -1,26 +1,28 @@
 # Files
 In this directory we have the following files:
-## implementations.py
+
+## preprocessing_helper.py
 
 This file includes the following functions:<br>
 
-#### least_squares_GD(y, tx, initial_w, max_iters, gamma)
-The implementation for linear regression using the gradient descent method with the mean squared error as an optimization function.
+#### split_importance(x, y, importance_boundary=0.7):
+The function is used to split the data into a representative, equally unbalanced train, test and validation set
 
-#### least_squares_SGD(y, tx, initial_w, max_iters, gamma)
-The implementation for linear regression using the stochastic gradient descent method with mean squared error as the optimization function.
+#### split_outliers(threshold, scores)
+The function is used to find the indices of the outliers
 
-#### least_squares(y, tx)
-The implementation for linear regression using normal equations derived by using the mean squared error as an optimization function.
+#### Anomaly_Detection_Isolation_Forests(x, change_split=False)
+The function performs an outlier detection using random forest algorithm
 
-#### ridge_regression(y, tx, lambda )
-The implementation for ridge regression.
+#### check_Isolation_Forests(contamination, outliers_indices, relKa)
+The functions check the proper working of the Isolation Forest algorithm
 
-#### logistic_regression(y, tx, initial_w, max_iters, gamma)
-The implementation for logistic regression using the gradient descent method.
+#### check_boundary_decision(scores, p, verbose=1)
+This functios controls how many scores returned by the IF algorithm are likely to be misclassified
 
-#### reg_logistic_regression(y, tx, lambda ,initial_w, max_iters, gamma)
-The implementation for regularized logistic regression using the gradient descent method
+#### drop_outliers(x, y, outliers)
+This function removes the outliers from the x and y passed
+
 
 ## run.py
 This script creates the csv which we used to submit to aircrowd and get an accuracy of 0.818, using our best model.<br>
