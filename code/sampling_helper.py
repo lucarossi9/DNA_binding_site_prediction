@@ -1,4 +1,4 @@
-## SAMPLING HELPER
+# SAMPLING HELPER
 
 # imports
 import random
@@ -8,9 +8,10 @@ from scipy.spatial.distance import minkowski
 from scipy.stats import spearmanr
 
 
-### For Undersampling
+# For Undersampling
 
 # quantization functions required for some score functions
+
 def quantize(x, cuts=100):
     """
     The function transform the x in discrete values to later apply some of the oversampling algorithms

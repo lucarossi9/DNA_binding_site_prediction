@@ -7,7 +7,8 @@ from xgboost import XGBRegressor
 import numpy as np
 
 
-## penalized losses
+# penalized losses
+
 def penalized_MSE_helper(y_true, y_pred):
     """
     The function is a helper for the functions penalized_MSE and penalized_MSE_train, the function
