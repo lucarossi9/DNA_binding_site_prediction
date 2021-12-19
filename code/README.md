@@ -1,23 +1,6 @@
 # Files
 In this directory we have the following files:
 
-## preprocessing_helper.py
-
-This file includes the following functions:<br>
-
-#### split_importance(x, y, importance_boundary=0.7): The function is used to split the data into a representative, equally unbalanced train, test and validation set
-
-#### split_outliers(threshold, scores): The function is used to find the indices of the outliers
-
-#### Anomaly_Detection_Isolation_Forests(x, change_split=False): The function performs an outlier detection using random forest algorithm
-
-#### check_Isolation_Forests(contamination, outliers_indices, relKa): The functions check the proper working of the Isolation Forest algorithm
-
-#### check_boundary_decision(scores, p, verbose=1): This functios controls how many scores returned by the IF algorithm are likely to be misclassified
-
-#### drop_outliers(x, y, outliers): This function removes the outliers from the x and y passed
-
-
 ## run.py
 This script creates the csv which we used to submit to aircrowd and get an accuracy of 0.818, using our best model.<br>
 The model is an ensemble of two ridge regressions and a logistic one.We train these models seperately.<br>
@@ -27,7 +10,7 @@ Then we parse the test samples with each model seperately and we utilize a hard 
 The Code directory also contains several helper files which hold functions that are essential for our project. Namely We have the following files:
 
 #### preprocessing_helper.py
-This file contains essential helper functions,required by numerous files:<br><br>
+This file contains essential helper functions,required by the notebooks in the preprocessing phase:<br><br>
 1.**split_importance(x, y, importance_boundary=0.7)**: The function is used to split the data into a representative, equally unbalanced train, test and validation set<br>
 2.**split_outliers(threshold, scores)**: The function is used to find the indices of the outliers<br>
 3.**Anomaly_Detection_Isolation_Forests(x, change_split=False)**: The function performs an outlier detection using random forest algorithm<br>
@@ -36,11 +19,11 @@ This file contains essential helper functions,required by numerous files:<br><br
 6.**drop_outliers(x, y, outliers)**: This function removes the outliers from the x and y passed<br>
 
 
-#### proj1_input_manipulation.py
-This file contains essential helper functions, required for input manipulation and preproseccing:<br><br>
-1.**load_csv_data** Loads a csv<br>
-2.**create_csv_submission** Creates a csv file for submission to aircrowd.<br>
-3.**create_output** Combine the 4 outputs for jets 0,1,2,3 into 1 output given the original order of the observations.<br>
+#### sampling_helper.py
+This file contains essential helper functions, required by the notebooks for undersampling and oversampling:<br><br>
+1.**quantize(x, cuts=100)** The function transform the x in discrete values to later apply some of the oversampling/undersampling algorithms<br>
+2.**quantize_features(x, cuts=100)** This function applies the quantization along all the columns of the matrix x<br>
+3.**Spearman(i, j)** The function computes spearman correlation score between the two vectors.<br>
 4.**standardize** Standardize the training dataset and extract its mean value and the standard variance.<br>
 5.**standardize_test** Standardize the test set using predefined means and variances.<br>
 6.**split_to_Jet_Num_Help** Find the indices for each different category of number of jets<br>
