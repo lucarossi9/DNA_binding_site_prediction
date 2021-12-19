@@ -5,23 +5,17 @@ In this directory we have the following files:
 
 This file includes the following functions:<br>
 
-#### split_importance(x, y, importance_boundary=0.7):
-The function is used to split the data into a representative, equally unbalanced train, test and validation set
+#### split_importance(x, y, importance_boundary=0.7): The function is used to split the data into a representative, equally unbalanced train, test and validation set
 
-#### split_outliers(threshold, scores)
-The function is used to find the indices of the outliers
+#### split_outliers(threshold, scores): The function is used to find the indices of the outliers
 
-#### Anomaly_Detection_Isolation_Forests(x, change_split=False)
-The function performs an outlier detection using random forest algorithm
+#### Anomaly_Detection_Isolation_Forests(x, change_split=False): The function performs an outlier detection using random forest algorithm
 
-#### check_Isolation_Forests(contamination, outliers_indices, relKa)
-The functions check the proper working of the Isolation Forest algorithm
+#### check_Isolation_Forests(contamination, outliers_indices, relKa): The functions check the proper working of the Isolation Forest algorithm
 
-#### check_boundary_decision(scores, p, verbose=1)
-This functios controls how many scores returned by the IF algorithm are likely to be misclassified
+#### check_boundary_decision(scores, p, verbose=1): This functios controls how many scores returned by the IF algorithm are likely to be misclassified
 
-#### drop_outliers(x, y, outliers)
-This function removes the outliers from the x and y passed
+#### drop_outliers(x, y, outliers): This function removes the outliers from the x and y passed
 
 
 ## run.py
@@ -32,21 +26,15 @@ Then we parse the test samples with each model seperately and we utilize a hard 
 ## Helper Files
 The Code directory also contains several helper files which hold functions that are essential for our project. Namely We have the following files:
 
-#### proj1_helpers.py
+#### preprocessing_helper.py
 This file contains essential helper functions,required by numerous files:<br><br>
-1.**ensemble_predictions** used for the hard voting scheme of the ensemble model<br>
-2.**compute_loss** calculates the MSE loss for the linear model<br>
-3.**compute_gradient** calculates the gradient for the linear model with MSE as an objective function<br>
-4.**compute_stoch_gradient** calculates the stochastic gradient for the linear model with MSE as an objective function<br>
-5.**sigmoid** The implementation of the sigmoid function<br>
-6.**calculate_loss** calculates loss for the Logistic Regression Model<br>
-7.**calculate_gradient** calculates the gradient for the logistic regression model<br>
-8.**compute_accuracy** computes the accuracy of a model given its predictions and the ground truth labels<br>
-9.**build_poly** augments a feature vector by adding all the powers of every feature up to a given degree.<br>
-10.**build_poly_cov_help** computes the feature crosses of degree 2 of a certain sample.<br>
-11.**build_poly_cov** computes the feature crosses of a certain feature vector.<br>
-12.**random_interval** calculates a number of random values within the specified interval.<br>
-13.**build_k_indices** build the shuffled subvectors required for cross validation
+1.**split_importance(x, y, importance_boundary=0.7)**: The function is used to split the data into a representative, equally unbalanced train, test and validation set<br>
+2.**split_outliers(threshold, scores)**: The function is used to find the indices of the outliers<br>
+3.**Anomaly_Detection_Isolation_Forests(x, change_split=False)**: The function performs an outlier detection using random forest algorithm<br>
+4.**check_Isolation_Forests(contamination, outliers_indices, relKa)**: The functions check the proper working of the Isolation Forest algorithm<br>
+5.**check_boundary_decision(scores, p, verbose=1)**: This functios controls how many scores returned by the IF algorithm are likely to be misclassified<br>
+6.**drop_outliers(x, y, outliers)**: This function removes the outliers from the x and y passed<br>
+
 
 #### proj1_input_manipulation.py
 This file contains essential helper functions, required for input manipulation and preproseccing:<br><br>
