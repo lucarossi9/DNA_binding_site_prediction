@@ -6,11 +6,12 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import minkowski
 from scipy.stats import spearmanr
-
+import scipy.stats as st
 
 # For Undersampling
 
 # quantization functions required for some score functions
+
 
 def quantize(x, cuts=100):
     """
@@ -73,6 +74,36 @@ def Correlation_Score_Max(x, y):
     x = x.T
     score = [-max([abs(Spearman(j, i)) for i in x]) for j in x]
     return np.array(score)
+
+
+def stratified_undersampling(x, y, len, x1, x2):
+    """
+    This function performs stratified undersampling on the majority class
+    by dropping samples in each strata with a probability equal to the frequency
+    :param x: the datapoints to be undersampled
+    :param y: the corresponding labels
+    :return x and y undersampled
+    """
+    # just a check that we drop with high probability in the frequent strata
+    to_drop = []
+    intervals = 0.05 * np.arange(15)
+    # we do a cycle over all intervals
+    for i in range(len(intervals)-1):
+        # get the indices for which the label is in the i-th strata
+        indices = np.where(np.logical_and(intervals[i] < y, y < intervals[i+1]))[0]
+        # compute the frequency of the i-th strata
+        frequency = len(indices) / len(y)
+        # we do a cycle over all elements in such a stratum
+        for j in range(len(indices)):
+            # we draw a uniform random variable
+            U = st.uniform.rvs(size=1)
+            if U <= frequency:
+                # we drop every sample in the i-th strata with probability alpha * frequency
+                to_drop.append(indices[j])
+    # we drop from x and y the samples and the labels found before
+    x_new = np.delete(x, to_drop, axis=0)
+    y_new = np.delete(y, to_drop, axis=0)
+    return x_new, y_new
 
 
 def PSU_undersampling_regression(x, y, randomsize, xi, yi):
