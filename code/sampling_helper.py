@@ -20,9 +20,11 @@ def quantize(x, cuts=100):
     :param cuts: number of bins in which we will cut the feature
     :return: the new x quantized
     """
+    # segment the array into discrete intervals
     ranges = np.sort(np.unique(pd.cut(x, cuts)))
     for i in range(ranges.shape[0]):
         ranges_i = ranges[i]
+        # for all elements in array that belong to interval i set their values equal to the mean
         x[(x <= ranges_i.right) & (x > ranges_i.left)] = (ranges_i.left + ranges_i.right) / 2
     return x
 
@@ -34,6 +36,7 @@ def quantize_features(x, cuts=100):
     :param cuts: number of bins in which we will cut the feature
     :return: the new matrix quantized
     """
+    #apply the quantization function
     return np.apply_along_axis(quantize, 0, x, cuts)
 
 
