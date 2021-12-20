@@ -94,7 +94,7 @@ def quantize_features(x, cuts=100):
     :param cuts: number of bins in which we will cut the feature
     :return: the new matrix quantized
     """
-    #apply the quantization function
+    #apply the quantization function across all features 
     return np.apply_along_axis(quantize, 0, x, cuts)
 
 
