@@ -7,8 +7,66 @@ import pandas as pd
 from scipy.spatial.distance import minkowski
 from scipy.stats import spearmanr
 import scipy.stats as st
+from preprocessing_helper import *
+from metrics_helper import *
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
 
 # For Undersampling
+
+
+# CROSS VALIDATION FUNCTION FOR THE BEST SAMPLING RATES
+def resampling_tuning(undersampling_grid, oversampling_grid, x, y):
+    """
+    This function computes the best parameters for the undersampling and oversampling algorithms
+    @param undersampling_grid: the grid of undersample rates
+    @param oversampling_grid: the grid of oversample rates
+    @param x: the samples
+    @param y: the labels
+    @return: the best couple of rates according to the classification metric
+    """
+    accuracies = np.zeros((len(undersampling_grid), len(oversampling_grid)))
+    # we split the two classes
+    x_1, y_1, x_0, y_0 = split_importance(x, y)
+    # we split randomly training and testing
+    x_1_train, x_1_test, y_1_train, y_1_test = train_test_split(x_1, y_1, test_size=0.3, random_state=42)
+    x_0_train, x_0_test, y_0_train, y_0_test = train_test_split(x_0, y_0, test_size=0.3, random_state=42)
+
+    # we concatenate x_1_train and x_0_train, note that now the minority class is represented well enough on the test
+    x_train = np.concatenate((x_1_train, x_0_train))
+    y_train = np.concatenate((y_1_train, y_0_train))
+    x_test = np.concatenate((x_1_test, x_0_test))
+    y_test = np.concatenate((y_1_test, y_0_test))
+
+    # we standardize the training data
+    sc = StandardScaler()
+    x_train = sc.fit_transform(x_train)
+    x_test = sc.transform(x_test)
+
+    # we split RelKas according to the defined threshold
+    y_train = split_RelKa(y_train, 0.7)
+    y_test = split_RelKa(y_test, 0.7)
+
+    for i in range(len(undersampling_grid)):
+        for j in range(len(oversampling_grid)):
+            print("Currently performing", undersampling_grid[i], "undersampling and", oversampling_grid[j],
+                  "oversampling")
+            # we perform resampling with the current rates
+            x_train_tilda, y_train_tilda = smote_sf_classification(x_train, y_train, undersample=undersampling_grid[i],
+                                                    oversample=oversampling_grid[j], kneighbors=5)
+            # we run the model and test its accuracy
+            clf = RandomForestClassifier(n_estimators=150, min_samples_split=2, min_samples_leaf=1)
+            clf.fit(x_train_tilda, y_train_tilda)
+            y_pred = clf.predict(x_test)
+            # saving the resulr
+            accuracies[i][j] = weighted_balance_average(y_test, y_pred)
+
+    best_result = np.where(accuracies == np.amax(accuracies))
+    # the optimal undersampling and oversampling rates
+    undersampling_rate_opt, oversampling_rate_opt = undersampling_grid[best_result[0]], oversampling_grid[
+        best_result[1]]
+    return undersampling_rate_opt, oversampling_rate_opt
 
 # quantization functions required for some score functions
 

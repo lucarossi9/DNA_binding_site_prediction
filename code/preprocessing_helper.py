@@ -121,3 +121,7 @@ def drop_outliers(x, y, outliers):
     # we remove the corresponding labels from the y vector
     y = np.delete(y, outliers, axis=0)
     return x, y
+
+
+def split_RelKa(y, p):
+    return np.array([1 if value > p else 0 for value in y])
