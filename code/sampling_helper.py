@@ -37,7 +37,7 @@ def quantize_features(x, cuts=100):
     return np.apply_along_axis(quantize, 0, x, cuts)
 
 
-# correlation scorers
+# CORRELATION SCORES
 def Spearman(i, j):
     """
     The function computes spearman correlation score between the two vectors
@@ -76,17 +76,16 @@ def Correlation_Score_Max(x, y):
     return np.array(score)
 
 
-def stratified_undersampling(x, y, len, x1, x2):
+def stratified_undersampling(x, y, intervals):
     """
     This function performs stratified undersampling on the majority class
-    by dropping samples in each strata with a probability equal to the frequency
+    by dropping samples in each strata with a probability equal to the frequency of the i-th stratum datapoints
     :param x: the datapoints to be undersampled
     :param y: the corresponding labels
+    :param intervals: the intervals for stratification
     :return x and y undersampled
     """
-    # just a check that we drop with high probability in the frequent strata
     to_drop = []
-    intervals = 0.05 * np.arange(15)
     # we do a cycle over all intervals
     for i in range(len(intervals)-1):
         # get the indices for which the label is in the i-th strata
@@ -106,6 +105,7 @@ def stratified_undersampling(x, y, len, x1, x2):
     return x_new, y_new
 
 
+# THIS FUNCTION IS NOT USED, OUTPERFORMED BY STRATIFIED UNDERSAMPLING
 def PSU_undersampling_regression(x, y, randomsize, xi, yi):
     """
     This function performs the PSU undersampling of the samples in the x,y arrays
@@ -121,7 +121,7 @@ def PSU_undersampling_regression(x, y, randomsize, xi, yi):
     # we calculate the centroid of the majority class data
     C = np.mean(x, axis=0)
     # for each sample in the majority class we calculate the l2 distance from the centroid
-    dist = np.linalg.norm(x - C, 2, axis=1)
+    dist = np.linalg.norm(x-C, 2, axis=1)
     # we sort the distances
     indices = dist.argsort()
     # we sort the samples and the corresponding labels according to the distances calculated before
@@ -136,6 +136,40 @@ def PSU_undersampling_regression(x, y, randomsize, xi, yi):
     x_resample = np.array([split_x[i][indices[i]] for i in range(randomsize)])
     # the corresponding labels of the undersampled data are also returned
     y_resample = np.array([split_y[i][indices[i]] for i in range(randomsize)])
+    return x_resample, y_resample
+
+
+def PSU_stratified_undersampling(x, y, randomsize, intervals, xi, yi):
+    """
+    This function performs stratified PSU undersampling of the samples in the x,y arrays
+    with regards to the set xi,yi. This version is a stratified version of the
+    slightly modified original proposed algorithm
+    :param x: numpy.ndarray: The array of samples on which we perform the undersampling
+    :param y: numpy.ndarray: The labels corresponding to the samples in x
+    :param randomsize: int: An integer corresponding to the number of samples to be left
+    :param intervals: the intervals for stratification
+    :param xi: the reference points
+    :param yi: the corresponding labels to xi
+    :return: numpy.ndarray,numpy.ndarray: Returns 2 numpy arrays corresponding to the undersampled data
+    """
+    # we calculate the number of strata
+    k = len(intervals)
+    # we initialize the lists for undersampling
+    x_resample = np.zeros(x.shape[1]).T
+    y_resample = []
+    for i in range(len(intervals)-1):
+        # we get the samples and the labels in the i-th strata
+        indices = np.where(np.logical_and(intervals[i] < y, y < intervals[i+1]))[0]
+        x_ = x[indices]
+        y_ = y[indices]
+        # we perform rescaled PSU undersampling on the i-th strata
+        frequency = len(indices) / len(y)
+        x_, y_ = PSU_undersampling_regression(x_, y_, np.int(randomsize * frequency), xi, yi)
+        # we add the samples and the corresponding labels
+        x_resample = np.concatenate([x_resample, x_], axis=0)
+        y_resample = np.concatenate([y_resample, y_], axis=0)
+    # we drop the first row used only for initialization
+    x_resample = np.delete(x_resample, 0, axis=0)
     return x_resample, y_resample
 
 
@@ -179,6 +213,7 @@ def Closest(x, z):
     return np.argmin(distances)
 
 
+# BEST PERFORMING FOR THE CLASSIFICATION
 def PSU_undersampling(x, y, randomsize, xi, yi):
     """
     This function performs the standard PSU undersampling algorithm on the samples in the x,y arrays
@@ -221,6 +256,7 @@ def PSU_undersampling(x, y, randomsize, xi, yi):
     return x_resample, y_resample
 
 
+# NOT USED
 def PSU_undersampling_reduced_dim(x, y, randomsize, xi, yi):
     """
     This function performs the modified PSU undersampling algorithm of the samples in the x,y arrays with regards to
@@ -352,9 +388,10 @@ def generate_samples(x, y, neighbors, N):
     return np.array(new_samples_x), np.array(new_samples_y)
 
 
-def smote_sf(x, y, undersample=0.5, oversample=0.1, attribute_scorer=Fisher_Score,
-             attribute_number=10, distance=float('inf'), kneighbors=3,
-             undersampling=random_sampler, importance_class=0.7):
+# FUNCTION WHICH PERFORMS UNDERSAMPLING AND OVERSAMPLING FOR THE CLASSIFICATION,
+# THE UNDERSAMPLING TECHNIQUE IS THE PSU UNDERSAMPLING
+def smote_sf_classification(x, y, undersample=0.1, oversample=0.3, attribute_scorer=Fisher_Score,
+                            attribute_number=10, distance=float('inf'), kneighbors=3, importance_class=0.7):
     """
     This function takes the complete input and produces a more balanced dataset based on the importance class
     :param x: numpy.ndarray: the feature vector of the initial dataset
@@ -365,7 +402,6 @@ def smote_sf(x, y, undersample=0.5, oversample=0.1, attribute_scorer=Fisher_Scor
     :param attribute_number: int: the number of attributes to keep according to their score
     :param distance: float: the norm which should be used for the Minkowski distance
     :param kneighbors: int: the number of nearest neighbours to be considered for each point
-    :param undersampling: function: the function to use for the undersampling of the majority class
     :param importance_class: float: the lower bound for the under-represented class
     :return: returns 2 new feature vectors and 2 new label vectors containing
             the data for the importance class and the data for the non importance
@@ -393,10 +429,65 @@ def smote_sf(x, y, undersample=0.5, oversample=0.1, attribute_scorer=Fisher_Scor
     # we calculate the final size of the undersampled data
     nimport_len = int(undersample * y_nimport.shape[0])
     # we perform undersampling
-    x_nimport, y_nimport = undersampling(x_nimport, y_nimport, nimport_len, x_import, y_import)
+    x_nimport, y_nimport = PSU_undersampling(x_nimport, y_nimport, nimport_len, x_import, y_import)
     # we calculate the number of samples to be generated by the oversampling algorithm
     N = int(oversample * (y_nimport.shape[0]) - y_import.shape[0])
     # we perform oversampling
+    new_samples_x, new_samples_y = generate_samples(x_import, y_import, neighbors, N)
+    # we merge the new samples with the old samples of the minority class and their labels
+    x_import = np.concatenate((x_import, new_samples_x))
+    y_import = np.concatenate((y_import, new_samples_y))
+    # we stack the samples and the labels of the majority and minority class
+    x_ret = np.concatenate((x_import, x_nimport))
+    y_ret = np.concatenate((y_import, y_nimport))
+    # x_ret represents the balanced dataset and y_ret the corresponding labels
+    return x_ret, y_ret
+
+
+# FUNCTION WHICH PERFORMS UNDERSAMPLING AND OVERSAMPLING FOR THE REGRESSION,
+# THE STRATIFIED UNDERSAMPLING TECHNIQUE IS USED
+def smote_sf_regression(x, y, undersample=0.5, oversample=0.1, attribute_scorer=Fisher_Score,
+                        attribute_number=10, distance=float('inf'), kneighbors=3,
+                        importance_class=0.7, width_strata=0.05):
+    """
+    This function performs stratified undersampling and SMOTE oversampling for the regression task
+    @param x: the initial dataset
+    @param y: the corresponding labels
+    @param undersample: the undersampling rate
+    @param oversample: the oversampling rate
+    @param attribute_scorer: the scorer for the features
+    @param attribute_number: the number of features to be considered for the distances between samples
+    @param distance: the degree of the Minkowski distance to be used
+    @param kneighbors: the number of nearest neighbours for the oversampling algorithm
+    @param importance_class: the importance boundary between majority and minority class
+    @param width_strata: the width of the strata for the stratified undersampling
+    @return: x and y rebalanced
+    """
+    # we split the training set into majority and minority class according to the value of the label
+    x_import = x[y >= importance_class]
+    y_import = y[y >= importance_class]
+    x_nimport = x[y < importance_class]
+    y_nimport = y[y < importance_class]
+
+    # we calculate the Fisher score for all the features
+    feature_scores = attribute_scorer(x_import, x_nimport)
+    # we find the attribute_number highest coordinates of the feature_scores vector
+    indices = np.sort((-feature_scores).argsort()[:attribute_number])
+    # we filter the samples to be represented only by the attribute number highest scored features
+    x_import_filtered = x_import[:, indices]
+    # we calculate the distances between the datapoints considering only the important features as otherwise we
+    # fall into the curse of dimensionality
+    distances = calculate_distances(x_import_filtered, distance)
+    # we find the kneighbors lowest indices of the distances of each sample, the corresponding datapoints are the
+    # nearest neighbours to be drawn randomly for the oversampling procedure
+    neighbors = np.array([np.sort(d.argsort()[:kneighbors]) for d in distances])
+    # we get the undersampled datasize
+    nimport_len = int(undersample * y_nimport.shape[0])
+    # we perform stratified undersampling
+    intervals = width_strata * np.arange(np.int(importance_class / width_strata))
+    x_nimport, y_nimport = stratified_undersampling(x_nimport, y_nimport, intervals)
+    # we compute the number of new samples to be generated
+    N = int(oversample * (y_nimport.shape[0]) - y_import.shape[0])
     new_samples_x, new_samples_y = generate_samples(x_import, y_import, neighbors, N)
     # we merge the new samples with the old samples of the minority class and their labels
     x_import = np.concatenate((x_import, new_samples_x))
