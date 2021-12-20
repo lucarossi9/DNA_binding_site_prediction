@@ -52,36 +52,5 @@ This file contains functions essential for measuring the accuracy of our model, 
 1.**penalized_MSE_helper(y_true, y_pred)** The function computes an average loss between the point in the minority and in the majority class, it is a helper for the functions penalized_MSE and penalized_MSE_train. <br>
 2.**penalized_MSE(y_true, y_pred, fitted_lambda=-1.0008549422054305)** The function compute the penalized MSE for the test/val set, in case of the test we did not apply previously a Box-Cox Transformation to y_test/y_val while we did for x_test, therefore we scale back the predictions with the inverse boxcox transformation and then we apply the helper function. <br>
 3.**penalized_MSE_train(y_true, y_pred, fitted_lambda=-1.0008549422054305)** This function computes the penalized MSE for the train set, in case of the train we applied      previously a Box-Cox Transformation therefore we scale back the predictions and the true labels with the inverse boxcox transformation and then we apply the helper function. <br>
-4.**score_metrics(x_train, x_test, y_train, y_test, iterations=3)** This function returns two 2d arrays, each of the arrays has 1 row for each iteration.
+4.**score_metrics(x_train, x_test, y_train, y_test, iterations=3)** This function returns two 2d arrays, each of the arrays has 1 row for each iteration.<br>
 
-#### proj1_ridge_regress.py
-This file contains functions essential for the hyperparameter fitting of our models for ridge regression:<br><br>
-1.**cross_validation_ridge** This function conducts cross validation for given values of hyperparameters for ridge regression.<br>
-2.**finetune_ridge** This function takes a hyperparameter vector for the degree and a vector for the lambda and finds the best hyperparameters out of the given ones<br>
-3.**optimal_weights_ridge** This function ,given all the hyperparameters and the training samples, computes the optimal weights for this method.<br>
-4.**predict_ridge** This function, given some weights and an augmentation degree, makes a prediction for the linear model.
-
-#### proj1_logistic.py
-This file contains functions essential for the hyperparameter fitting of our models for logistic regression:<br><br>
-1.**cross_validation_logistic** This function conducts cross validation for given values of hyperparameters for regularized logistic regression.<br>
-2.**finetune_logistic** This function takes a hyperparameter vector for the degree and a vector for the lambda and finds the best hyperparameters out of the given ones.<br>
-3.**optimal_weights_logistic** This function, given all the hyperparameters and the training samples, computes the optimal weights for this method.<br>
-4.**predict_logistic**This function, given some weights and an augmentation degree, makes a prediction for the logistic model.<br>
-5.**reg_logistic_regression_plot** Given a test set and a train set the function fits the regularized logistic regression parameters on the train set and it calculates the loss over each iteration for both the test set and the train set. Then it returns the two loss vectors.<br>
-6.**calculate_batch_gradient** Calculate the logistic regression gradient for a batch.(**Not used**)<br>
-7.**learning_by_penalized_batch_gradient** The implementation for regularized logistic regression using the gradient descent method with a batch for each iteration instead of the whole dataset.(**Not used**)<br>
-8.**cross_validation_logistic_batch**This function conducts cross validation for given values of hyperparameters for regularized logistic regression, using the batch gradient descent method.(**Not used**)<br>
-9.**finetune_batch_logistic**This function takes a hyperparameter vector for the degree and a vector for the lambda and finds the best hyperparameters out of the given ones. It uses a batch gradient descent method.(**Not used**)<br>
-10.**calculate Hessian** Calculates the Hessian of the logistic function loss(**Not used**)<br>
-11.**logistic_regression_compute** Returns the loss, the gradient and the Hessian(**Not used**)<br>
-12.**learning_by_newton_method** One step of newton method returns new weights and current loss(**Not used**)<br>
-13.**penalized_logistic_regression** Calculates the loss, the gradient and the Hessian for the regularized model.(**Not used**)
-
-## Notebook Executions
-The code directory also contains seperate notebooks, one for each function we were required to implement.By executing the corresponding notebook you can see the hyperparameter fitting for that process and you will also create the corresponding output file in the **Data** folder.Namely we have the following files:<br>
-1.**run_grad.ipynb** Executes a notebook that fits the parameters with the Gradient Descent Method for the linear model and makes the relative predictions.<br>
-2.**run_stochastic_grad.ipynb** Executes a notebook that fits the parameters with the Stochastic Gradient Descent Method for the linear model and makes the relative predictions.<br>
-3.**run_least_squares.ipynb** Executes a notebook that fits the parameters with the Least Squares Method for the linear model and makes the relative predictions.<br>
-4.**run_ridge.ipynb** Executes a notebook that fits the parameters with the Ridge Regression for the linear model and makes the relative predictions.<br>
-5.**run_logistic.ipynb** Executes a notebook that fits the parameters for Logistic Regression with the Gradient Descent for the logistic model and makes the relative predictions.<br>
-6.**run_regularized_logistic.ipynb** Executes a notebook that fits the parameters for Regularized Logistic Regression with the Gradient Descent Method for the logistic model and makes the relative predictions.<br>
