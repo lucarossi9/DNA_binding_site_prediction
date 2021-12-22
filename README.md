@@ -12,7 +12,6 @@ Second Project of the Machine Learning course in collaboration with the EPFL Lab
 │   ├── metrics_helper.py
 │   ├── README.md
 ├── Data
-│   ├── data.zip
 │   └── README.md
 ├── README.md
 └── Report.pdf
@@ -25,7 +24,7 @@ The code folder contains all the python files as well as all the jupyter noteboo
 ## Data
 
 The data folder.<br>
-It currently contains a single zip **data.zip** file containing the dataset of interest <br>
+It currently contains a link to the **data.zip** file containing the dataset of interest <br>
 Open the zip inside that folder in order to execute the programs <br>
 For more information read the corresponding **README.md** file in that directory.
 
