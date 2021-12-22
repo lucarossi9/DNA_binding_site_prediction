@@ -1,5 +1,4 @@
-
-## HELPER FOR THE METRICS
+# HELPER FOR THE METRICS
 
 from sklearn.metrics import mean_squared_error as MSE
 import scipy as sci
@@ -18,7 +17,7 @@ evaluate the goodness of fits of the models after training.
 """
 
 
-## penalized loss for regression
+# penalized loss for regression
 def penalized_MSE(y_true, y_pred, decision_boundary=0.7):
     """
     The function computes an average loss between the point in the minority and the ones in the majority class
@@ -43,8 +42,7 @@ def penalized_MSE(y_true, y_pred, decision_boundary=0.7):
         return (1 / 2) * MSE(critical_y, critical_predictions) + (1 / 2) * MSE(common_y, common_predictions)
 
 
-#penalized metric for classification
-
+# penalized metric for classification
 def weighted_balance_average(y_true, y_pred):
     """
     This function calculates the weighted balanced accuracy of a classification model
@@ -104,23 +102,23 @@ def return_accuracy(y_test, y_pred, verbose=1):
 
 # Useful function for the plot of the curves of the losses to evaluate if we are overfitting or not
 def score_metrics_regression(x_train, x_test, y_train, y_test, model):
-  """
-  Returns 2-2d arrays, each of the arrays has 1 row for each iteration, the first array contains the training losses for
-  each iteration, the second array contains the testing losses for each iteration. This function will be useful to
-  understand if the model chosen is overfitting or underfitting.
-  @param x_train: numpy.ndarray containing the features of the training set
-  @param x_test: numpy.ndarray containing the features of the test set
-  @param y_train: numpy.ndarray containing the labels of the training set
-  @param y_test: numpy.ndarray containing the labels of the test set
-  @param model: the regression model we are evaluating
-  """
-  training_scores=[]
-  testing_scores=[]
-  # we fit the model
-  model.fit(x_train, y_train, eval_metric = "rmse", eval_set= [(x_train,y_train), (x_test, y_test)])
+    """
+    Returns 2-2d arrays, each of the arrays has 1 row for each iteration, the first array contains the training losses
+    for each iteration, the second array contains the testing losses for each iteration. This function will be useful to
+    understand if the model chosen is overfitting or underfitting.
+    @param x_train: numpy.ndarray containing the features of the training set
+    @param x_test: numpy.ndarray containing the features of the test set
+    @param y_train: numpy.ndarray containing the labels of the training set
+    @param y_test: numpy.ndarray containing the labels of the test set
+    @param model: the regression model we are evaluating
+    """
+    training_scores = []
+    testing_scores = []
+    # we fit the model
+    model.fit(x_train, y_train, eval_metric="rmse", eval_set=[(x_train, y_train), (x_test, y_test)])
 
-  # we take the results for the training and test set and we append to the lists
-  training_scores.append(model.evals_result()['validation_0']['rmse'])
-  testing_scores.append(model.evals_result()['validation_1']['rmse'])
+    # we take the results for the training and test set and we append to the lists
+    training_scores.append(model.evals_result()['validation_0']['rmse'])
+    testing_scores.append(model.evals_result()['validation_1']['rmse'])
 
-  return np.array(training_scores).T, np.array(testing_scores).T
+    return np.array(training_scores).T, np.array(testing_scores).T

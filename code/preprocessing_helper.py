@@ -149,7 +149,7 @@ def split_outliers(threshold, scores):
     return outliers_indices
 
 
-#used to drop outliers
+# used to drop outliers
 def drop_outliers(x, y, outliers):
     """
     This function simply removes the outliers from the x and y passed
@@ -167,6 +167,7 @@ def drop_outliers(x, y, outliers):
 
 # FOR ENCODING OF THE DNA SEQUENCES (not using since the performances were slightly decreasing)
 
+
 # for one hot encoding of a single feature
 def one_hot_encode_sequence(seq):
     """
@@ -178,6 +179,7 @@ def one_hot_encode_sequence(seq):
     mapping = dict(zip("ACGT", range(4)))
     seq2 = [mapping[i] for i in seq]
     return np.eye(4)[seq2]
+
 
 # for one hot encoding of an entire column of the dataframe
 def one_hot_encoding_df(df):
@@ -198,6 +200,7 @@ def one_hot_encoding_df(df):
     # we drop the old column
     df.drop(columns=['Kmer'], inplace=True)
     return df
+
 
 # for the sequential encoding of the entire column of the dataframe
 def sequential_encoding(df):

@@ -9,11 +9,11 @@ from scipy.stats import spearmanr
 import scipy.stats as st
 
 
-""" In order to have a balance dataset on which we could train our model, we performed both undersampling and oversampling
-of our dataset. In particular, we performed undersampling on the minority class and oversampling of the majority class such
-that at the end of the process we had 70% of samples in the majority class and 30% in the minority class. We tried
-different oversampling and undersampling algorithms in each of which we changed the metrics of evaluation. In particular
-we tried:
+""" In order to have a balance dataset on which we could train our model, we performed both undersampling and 
+oversampling of our dataset. In particular, we performed undersampling on the minority class and oversampling on the
+majority class such that at the end of the process we had 70% of samples in the majority class and 30% in the minority
+class. We tried different oversampling and undersampling algorithms in each of which we changed the metrics of 
+evaluation. In particular we tried:
 
 - PSU undersampling (best performance for classification task) ---> function PSU_undersampling
 
@@ -64,7 +64,7 @@ def stratified_undersampling(x, y, intervals):
             U = st.uniform.rvs(size=1)
 
             if U <= frequency:
-                # we drop every sample in the i-th strata with probability alpha * frequency
+                # we drop every sample in the i-th strata with probability frequency
                 to_drop.append(indices[j])
 
     # we drop from x and y the samples and the labels found before
@@ -150,7 +150,7 @@ def PSU_undersampling(x, y, randomsize, xi, yi):
 
     # we now calculate the remaining randomsize-1 datapoints
     for i in range(1, randomsize):
-        if i%500==0:
+        if i % 500 == 0:
             print("Starting ", i, " iteration")
 
         # we apply the following recursive scheme: we calculate the index of the furthest point in the i-th partition
@@ -170,15 +170,16 @@ def PSU_undersampling(x, y, randomsize, xi, yi):
 
 
 # not used, outperformed by random stratified oversampling
-def PSU_stratified_undersampling(x, y, randomsize, intervals, xi ,yi):
+def PSU_stratified_undersampling(x, y, intervals, xi, yi):
     """
     This function performs stratified PSU undersampling of the samples in the x,y arrays
     with regards to the set xi,yi. This version is a stratified version of the
     slightly modified original proposed algorithm
     :param x: numpy.ndarray: The array of samples on which we perform the undersampling
     :param y: numpy.ndarray: The labels corresponding to the samples in x
-    :param randomsize: int: An integer corresponding to the number of samples to be left
     :param intervals: the intervals for stratification
+    :param xi: numpy.ndarray: The array with the samples to be used as a reference for distances
+    :param yi: numpy.ndarray: the labels corresponding to the samples in xi
     :return: numpy.ndarray,numpy.ndarray: Returns 2 numpy arrays corresponding to the undersampled data
     """
 
@@ -186,7 +187,7 @@ def PSU_stratified_undersampling(x, y, randomsize, intervals, xi ,yi):
     k = len(intervals)
 
     # we initialize the lists for undersampling
-    x_resample = np.zeros((1,x.shape[1]))
+    x_resample = np.zeros((1, x.shape[1]))
     y_resample = []
 
     for i in range(len(intervals)-1):
@@ -197,7 +198,8 @@ def PSU_stratified_undersampling(x, y, randomsize, intervals, xi ,yi):
 
         # we perform rescaled PSU undersampling on the i-th strata
         frequency = len(indices) / len(y)
-        print('stratification on', intervals[i], intervals[i+1], 'we keep', np.int(len(indices)*(1-frequency)), 'on', len(indices))
+        print('stratification on', intervals[i], intervals[i+1])
+        print('we keep', np.int(len(indices)*(1-frequency)), 'on', len(indices))
         x_, y_ = PSU_undersampling_regression(x_, y_, np.int(len(indices)*(1-frequency)), xi, yi)
 
         # we add the samples and the corresponding labels
@@ -304,7 +306,7 @@ def Closest(x, z):
     return np.argmin(distances)
 
 
-#this function is used in the original version of the PSU undersampling and in his reduced dimensionality variant
+# this function is used in the original version of the PSU undersampling and in his reduced dimensionality variant
 def Furthest(x, z):
     """
     Returns the index of the sample in x which is furthest from all the samples in z
@@ -335,8 +337,8 @@ def Furthest(x, z):
 
 # FOR OVERSAMPLING
 
-# Best performances for both regression and classification task, variation of SMOTE oversampling for high dimensional
-# datasets
+# Best performances for both regression and classification task,
+# variation of SMOTE oversampling for high dimensional datasets
 def generate_samples(x, y, neighbors, N):
     """
     This function generate N samples which are convex combinations of
@@ -379,8 +381,8 @@ def generate_samples(x, y, neighbors, N):
     return np.array(new_samples_x), np.array(new_samples_y)
 
 
-# this function implements a stratified version of the variant of the SMOTE oversampling algorithm for high dimensionality
-# datasets, it use the function generate_samples_for_stratified
+# this function implements a stratified version of the variant of the SMOTE oversampling algorithm
+# for high dimensionality datasets, it uses the function generate_samples_for_stratified
 def generate_samples_stratified(x, y, neighbors, N, intervals):
     """
     This function generate N samples which are convex combinations of
@@ -459,8 +461,8 @@ def generate_samples_for_stratified(x, y, neighbors, N, indices, frequencies):
         neigh_i = neighbors[random_sample_i, random_sample_j]
         x_j = x[neigh_i]
 
-        # we draw a uniform random variable, this time we generate the uniform between 0 and frequency such that the labels
-        # are closer to the original datapoint if the frequency is small (so we have more labels in this strata)
+        # we draw a uniform random variable, this time we generate the uniform between 0 and frequency  such that
+        # the labels are closer to the original datapoint if the frequency is small and we oversample where needed
         lambda_ = random.uniform(0, frequency)
 
         # we get the label of the picked sample and of its neighbour
@@ -492,9 +494,9 @@ def quantize(x, cuts=1):
     :param cuts: number of bins in which we will cut the feature
     :return: the new x quantized
     """
-    #left extreme
+    # left extreme
     left = 0
-    #bin width of the interval
+    # bin width of the interval
     bin_width = np.int(np.ceil(np.shape(x)[0]/cuts))
 
     while left+bin_width < x.shape[0]:
@@ -586,7 +588,8 @@ def Fisher_Score(x_import, x_nimport):
 
     return np.divide(mean_dist, std_sum)
 
-#Calculates the distance between any two pairs of the set x using the Minkowski distance of degree distance
+
+# Calculates the distance between any two pairs of the set x using the Minkowski distance of degree distance
 def calculate_distances(x, distance):
     """
     Calculates the distance between any two pairs of the set x using
@@ -608,7 +611,7 @@ def calculate_distances(x, distance):
 
 # -------------------------------------------------------------------------
 
-#FUNCTIONS WHICH PERFORM BOTH UNDERSAMPLING AND OVERSAMPLING
+# FUNCTIONS WHICH PERFORM BOTH UNDERSAMPLING AND OVERSAMPLING
 
 # Function which performs both undersampling and oversampling for the classification task, the undersampling algorithm
 # used is the PSU undersampling while the oversampling technique is the variant of the SMOTE algorithm for high
@@ -682,14 +685,13 @@ def smote_sf_classification(x, y, undersample=0.1, oversample=0.3, attribute_sco
 # Function which performs both undersampling and oversampling for classification, the undersampling technique used is
 # the random stratified undersampling while the oversampling technique is the variation of the SMOTE algorithm for high
 # dimensionality datasets
-def smote_sf_regression(x, y, undersample=0.1, oversample=0.3, attribute_scorer=Fisher_Score,
+def smote_sf_regression(x, y, oversample=0.3, attribute_scorer=Fisher_Score,
                         attribute_number=10, distance=float('inf'), kneighbors=3,
                         importance_class=0.7, width_strata=0.05):
     """
     This function performs stratified undersampling and SMOTE oversampling for the regression task
     @param x: the initial dataset
     @param y: the corresponding labels
-    @param undersample: the undersampling rate
     @param oversample: the oversampling rate
     @param attribute_scorer: the scorer for the features
     @param attribute_number: the number of features to be considered for the distances between samples
@@ -723,18 +725,15 @@ def smote_sf_regression(x, y, undersample=0.1, oversample=0.3, attribute_scorer=
     # nearest neighbours to be drawn randomly for the oversampling procedure
     neighbors = np.array([np.sort(d.argsort()[:kneighbors]) for d in distances])
 
-    # we get the undersampled datasize
-    nimport_len = int(undersample * y_nimport.shape[0])
-
     # we perform stratified undersampling
-    intervals_undersampling = np.arange(width_strata ,importance_class+width_strata, width_strata)
+    intervals_undersampling = np.arange(width_strata, importance_class+width_strata, width_strata)
     x_nimport, y_nimport = stratified_undersampling(x_nimport, y_nimport, intervals_undersampling)
 
     # we compute the number of new samples to be generated
     N = int(oversample * (y_nimport.shape[0]) - y_import.shape[0])
 
     # we compute the intervals for the oversampling
-    intervals_oversampling = np.arange(importance_class,1, width_strata)
+    intervals_oversampling = np.arange(importance_class, 1, width_strata)
     new_samples_x, new_samples_y = generate_samples(x_import, y_import, neighbors, N)
 
     # we merge the new samples with the old samples of the minority class and their labels
