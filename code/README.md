@@ -16,7 +16,7 @@ The Code directory also contains several helper files which hold functions that 
 #### preprocessing_helper.py
 This file contains essential helper functions,required by the notebooks in the preprocessing phase:<br><br>
 1.**split_importance(x, y, importance_boundary=0.7)**: This function is used to split the data into a representative, equally unbalanced train, test and validation set<br>
-2.**split_RelKa(y,p)**: This function simply performs the splitting of the RelKa to labels 0 or 1 according to whether the original label is above or below the importance boundary p. <br>
+2.**split_RelKa(y, p)**: This function simply performs the splitting of the RelKa to labels 0 or 1 according to whether the original label is above or below the importance boundary p. <br>
 3.**Anomaly_Detection_Isolation_Forests(x, change_split=False)**: This function performs an outlier detection using Isolation Forest Algorithm where the boundary decision may be user-defined by using the boolean change_split. <br>
 4.**check_Isolation_Forests(contamination, outliers_indices, relKa)**: This functions simply checks the proper working of the Isolation Forest algorithm. <br>
 5.**check_boundary_decision(scores, p, verbose=1)**: This functios controls how many scores returned by the Isolation Forest Algorithm are below some threshold and hence likely to be misclassified. <br>
@@ -29,7 +29,7 @@ This file contains essential helper functions,required by the notebooks in the p
 
 #### sampling_helper.py
 This file contains essential helper functions, required by the notebooks for undersampling and oversampling:<br><br>
-1.**stratified_undersampling(x,y,intervals)**: This function performs stratified undersampling on the majority class by dropping samples in the i-th stratum with a probability equal to the frequency of that stratum datapoints. <br>
+1.**stratified_undersampling(x, y, intervals)**: This function performs stratified undersampling on the majority class by dropping samples in the i-th stratum with a probability equal to the frequency of that stratum datapoints. <br>
 2.**PSU_undersampling_regression(x, y, randomsize, xi, yi)**:  This function performs a slight modification of the original PSU undersampling algorithm of the samples in the x,y arrays with respect to the set xi,yi. <br>
 3.**PSU_undersampling(x, y, randomsize, xi, yi)** This function performs the standard PSU undersampling algorithm on the samples in the x,y arrays
   with respect to the set xi,yi. <br>
@@ -68,4 +68,3 @@ This file contains functions essential for measuring the accuracy of our model, 
 3.**return_accuracy(y_true, y_pred, verbose=1)** This function computes the accuracy of a prediction by taking the trace of the confusion matrix. It also prints if the verbose is active the accuracy on the majority and on the minority class respectively. <br>
 4.**score_metrics_regression(x_train, x_test, y_train, y_test, iterations=3)** Returns 2-2d arrays, each of the arrays has 1 row for each iteration, the first array contains the training losses for each iteration, the second array contains the testing losses for each iteration. This function will be useful to
 understand if the model chosen is overfitting or underfitting.<br>
-
