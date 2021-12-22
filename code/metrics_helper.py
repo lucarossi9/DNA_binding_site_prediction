@@ -5,6 +5,8 @@ from sklearn.metrics import mean_squared_error as MSE
 import scipy as sci
 from xgboost import XGBRegressor
 import numpy as np
+from sklearn.metrics import confusion_matrix
+
 
 """
 Discussion: Before and after performing undersample and oversample of our dataset, we tried using a different loss to

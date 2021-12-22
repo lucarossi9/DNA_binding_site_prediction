@@ -6,6 +6,8 @@ from sklearn.ensemble import IsolationForest
 import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
+
 
 """ This notebook contains some functions used during the preprocessing of the dataset"""
 
@@ -185,7 +187,7 @@ def one_hot_encoding_df(df):
     :return: the dataframe modified with the column encoded
     """
     # we apply the function one_hot_encode_sequence repeteadly using apply method
-    sequences = df.Kmer.apply(lambda x: one_hot_encode(x).reshape(14 * 4))
+    sequences = df.Kmer.apply(lambda x: one_hot_encode_sequence(x).reshape(14 * 4))
 
     # we create a dataframe with the encodings
     df_to_merge = sequences.apply(pd.Series)
