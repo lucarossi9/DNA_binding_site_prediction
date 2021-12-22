@@ -31,7 +31,7 @@ def split_RelKa(y, p):
     : param p: float: the decision boundary, the class will be one if relKa>p, zero otherwise
     """
     # we simply return the list created with a Python comprehension
-  return np.array([1 if value > p else 0 for value in y])
+    return np.array([1 if value > p else 0 for value in y])
 
 
 # for outliers detection
@@ -120,10 +120,11 @@ def check_boundary_decision(scores, p, verbose=1):
 
         # we plot the distribution of the scores
         plt.hist(scores)
-        plt.xlabel('scores', fontsize=30)
-        plt.ylabel('frequency', fontsize=30)
+        plt.xlabel('scores', fontsize=25)
+        plt.ylabel('frequency', fontsize=25)
         matplotlib.rc('xtick', labelsize=20)
         matplotlib.rc('ytick', labelsize=20)
+        plt.title('Distribution of the scores outliers')
         plt.show()
 
         # we print the indecision percentage and the percentage of outliers detected by the Isolation Forest Algorithm
@@ -162,3 +163,60 @@ def drop_outliers(x, y, outliers):
     y = np.delete(y, outliers, axis=0)
     return x, y
 
+# FOR ENCODING OF THE DNA SEQUENCES (not using since the performances were slightly decreasing)
+
+# for one hot encoding of a single feature
+def one_hot_encode_sequence(seq):
+    """
+    The function perform one hot encoding on a single DNA sequence, for each sequence it maps each character to a vector
+    four dimensional vector of zeros and ones.
+    :param: seq: the DNA sequence
+    :return: np.ndarray: a vector with the encoded sequence
+    """
+    mapping = dict(zip("ACGT", range(4)))
+    seq2 = [mapping[i] for i in seq]
+    return np.eye(4)[seq2]
+
+# for one hot encoding of an entire column of the dataframe
+def one_hot_encoding_df(df):
+    """
+    The function performs one hot encoding on the column Kmer of the dataframe df
+    :param: df a dataframe whose column Kmer contains the DNA sequence
+    :return: the dataframe modified with the column encoded
+    """
+    # we apply the function one_hot_encode_sequence repeteadly using apply method
+    sequences = df.Kmer.apply(lambda x: one_hot_encode(x).reshape(14 * 4))
+
+    # we create a dataframe with the encodings
+    df_to_merge = sequences.apply(pd.Series)
+
+    # we merge it
+    df = pd.merge(df, df_to_merge, right_index=True, left_index=True)
+
+    # we drop the old column
+    df.drop(columns=['Kmer'], inplace=True)
+    return df
+
+# for the sequential encoding of the entire column of the dataframe
+def sequential_encoding(df):
+    """
+    The function performs the sequential encoding of an entire column of sequences of DNA in df, it maps the features
+    as explained in the dictio below. For each sequence we will have a vector of dimension equal to the length of the
+    sequence with values mapped as in the dictio below.
+    :param: df: the dataframe whose column Kmer contains the DNA sequence
+    :return: the dataframe modified with the column encoded
+    """
+    dictio = {
+        'a': 0.25,
+        'c': 0.50,
+        'g': 0.75,
+        't': 1.00
+    }
+
+    # we apply the encoding
+    df_encoding = df['Kmer'].apply(lambda bps: pd.Series([dictio[bp] if bp in dictio else 0.0 for bp in bps.lower()]))
+
+    # we merge the results
+    df = pd.merge(df, df_encoding, left_index=True, right_index=True)
+
+    return df
