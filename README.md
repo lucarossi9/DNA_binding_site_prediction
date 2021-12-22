@@ -1,5 +1,5 @@
 # Machine-Learning-Project-2
-Second Project of the Machine Learning course in collaboration with the EPFL lab of Laboratory for Computation and Visualization in Mathematics and Mechanics.
+Second Project of the Machine Learning course in collaboration with the EPFL Laboratory for Computation and Visualization in Mathematics and Mechanics.
 
 # File Structure
 ```console
