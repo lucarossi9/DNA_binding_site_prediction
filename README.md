@@ -19,7 +19,31 @@ Second Project of the Machine Learning course in collaboration with the EPFL Lab
 ```
 ## Code
 
-The code folder contains all the python files as well as all the jupyter notebooks. For more information read the corresponding **README.md** file in that directory.
+The code folder contains all the python files as well as all the jupyter notebooks. For more information read the corresponding **README.md** file in that directory.<br>
+Here we will briefly present the optimal hyperparameters for the models that we use to get the best results.
+
+### Optimal Parameters(Regression)
+We use the **XGBoost Regressor** model with the following hyperparameters:
+```python
+parameters = {'subsample' : 0.8999999999999999,
+              'n_estimators' : 500,
+              'max_depth' : 20,
+              'learning_rate' : 0.01,
+              'colsample_bytree' : 0.7999999999999999,
+              'colsample_bylevel' : 0.6}
+```
+
+### Optimal Parameters(Classification)
+We use a **Random Forest Classifier** as our model with the following hyperparameters:
+
+```python
+parameters = {'n_estimators':400,
+              'min_samples_split':5,
+              'min_samples_leaf':1,
+              'max_features':'auto',
+              'max_depth':20,
+              'bootstrap':False}
+```
 
 ## Data
 
