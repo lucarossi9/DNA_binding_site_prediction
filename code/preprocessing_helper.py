@@ -7,7 +7,9 @@ import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-
+from keras.layers import Dense, Dropout
+from keras.models import Sequential, Model
+from keras import metrics, Input
 
 """ This notebook contains some functions used during the preprocessing of the dataset"""
 
@@ -34,6 +36,9 @@ def split_RelKa(y, p):
     """
     # we simply return the list created with a Python comprehension
     return np.array([1 if value > p else 0 for value in y])
+
+
+#------------------------------------------------------------------------------------------------------------
 
 
 # for outliers detection
@@ -165,6 +170,8 @@ def drop_outliers(x, y, outliers):
     y = np.delete(y, outliers, axis=0)
     return x, y
 
+#--------------------------------------------------------------------------------------------
+
 # FOR ENCODING OF THE DNA SEQUENCES (not using since the performances were slightly decreasing)
 
 
@@ -225,3 +232,45 @@ def sequential_encoding(df):
     df = pd.merge(df, df_encoding, left_index=True, right_index=True)
 
     return df
+
+#---------------------------------------------------------------------------------------------------
+
+#autoencoders for reducing the dimensionality of the data (it was performing better than PCA)
+
+
+def train_autoencoder(X_train, metrics=[metrics.RootMeanSquaredError(name='rms'),metrics.MeanAbsoluteError(name='mae')],
+                      ENCODING_DIM=2, BATCH_SIZE=1024, EPOCHS=80):
+    """
+    This function creates and train an autoencoder, the encoder part is made up of two dense layers with Relu activation
+    function and the decoder part is made of the same layers in inverse order.
+    :params: X_train: the feature matrix we want to learn how to encode and decode
+    :params metrics: the metrics to be used for the evaluation of the encoding and decoding procedure
+    """
+    # we find the input size
+    len_input_output = X_train.shape[-1]
+    input_ = Input(shape=(len_input_output,))
+
+    # we construct the encoder using Keras
+    encoded = Dense(units=ENCODING_DIM * 2, activation="relu")(input_)
+    bottleneck = Dense(units=ENCODING_DIM,
+                       activation="relu")(encoded)
+
+    # we construct the decoder using Keras
+    decoded = Dense(units=ENCODING_DIM * 2,
+                    activation="relu")(bottleneck)
+    output = Dense(units=len_input_output,
+                   activation="linear")(decoded)
+
+    # Training is performed on the entire autoencoder
+    autoencoder = Model(inputs=input_, outputs=output)
+    autoencoder.compile(optimizer='adam', loss='mean_squared_error',
+                        metrics=[metrics])
+    autoencoder.fit(X_train, X_train,
+                    batch_size=BATCH_SIZE,
+                    epochs=EPOCHS)
+
+    # Use only the encoder part for dimensionality reduction
+    encoder = Model(inputs=input_, outputs=bottleneck)
+
+    # the function returns both the encoder and the autoencoder
+    return autoencoder, encoder
