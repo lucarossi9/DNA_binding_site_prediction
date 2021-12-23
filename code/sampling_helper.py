@@ -733,7 +733,7 @@ def smote_sf_regression(x, y, oversample=0.3, attribute_scorer=Fisher_Score,
     N = int(oversample * (y_nimport.shape[0]) - y_import.shape[0])
 
     # we compute the intervals for the oversampling
-    intervals_oversampling = np.arange(importance_class, 1, width_strata)
+    #intervals_oversampling = np.arange(importance_class, 1, width_strata)
     new_samples_x, new_samples_y = generate_samples(x_import, y_import, neighbors, N)
 
     # we merge the new samples with the old samples of the minority class and their labels
