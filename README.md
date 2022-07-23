@@ -1,5 +1,6 @@
-# Machine-Learning-Project-2
-Second Project of the Machine Learning course in collaboration with the EPFL Laboratory for Computation and Visualization in Mathematics and Mechanics.
+
+Machine Learning project in collaboration with the [Laboratory for Computation and Visualization in Mathematics and Mechanics](https://www.epfl.ch/labs/lcvmm/).
+
 
 # File Structure
 ```console
@@ -23,7 +24,7 @@ The code folder contains all the python files as well as all the jupyter noteboo
 Here we will briefly present the optimal hyperparameters for the models that we use to get the best results.
 
 ### Optimal Parameters(Regression)
-We use the **XGBoost Regressor** model with the following hyperparameters:
+We used the **XGBoost Regressor** model with the following hyperparameters:
 ```python
 parameters = {'subsample' : 0.8999999999999999,
               'n_estimators' : 500,
@@ -34,7 +35,7 @@ parameters = {'subsample' : 0.8999999999999999,
 ```
 
 ### Optimal Parameters(Classification)
-We use a **Random Forest Classifier** as our model with the following hyperparameters:
+We used a **Random Forest Classifier** as our model with the following hyperparameters:
 
 ```python
 parameters = {'n_estimators':400,
