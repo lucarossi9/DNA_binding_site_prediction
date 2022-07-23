@@ -1,6 +1,8 @@
 
 Machine Learning project in collaboration with the [Laboratory for Computation and Visualization in Mathematics and Mechanics](https://www.epfl.ch/labs/lcvmm/).
 
+A detailed report is available in the repository. 
+
 
 # File Structure
 ```console
